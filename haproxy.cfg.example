@@ -1,0 +1,27 @@
+global
+    #daemon
+    #log /dev/log    local0
+    crt-base /etc/letsencrypt/live
+    lua-load /etc/haproxy/acme-http01-webroot.lua
+    
+defaults
+    mode    http
+    option  httplog
+    timeout connect 5000
+    timeout client  50000
+    timeout server  50000
+    
+frontend http
+    bind *:80
+    mode http
+    acl url_acme_http01 path_beg /.well-known/acme-challenge/
+    http-request use-service lua.acme-http01 if METH_GET url_acme_http01
+    default_backend default
+
+frontend https
+    bind *:443 ssl crt www.example.com/haproxy.pem
+    mode http
+    default_backend default
+    
+backend default
+    server server1 127.0.0.1:8002
