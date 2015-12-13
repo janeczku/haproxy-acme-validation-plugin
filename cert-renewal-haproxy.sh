@@ -35,15 +35,15 @@ function issueCert {
 function logger_error {
   if [ -n "${LOGFILE}" ]
   then
-    echo "[error] ${1}\n" >> ${LOG_TO_FILE}
+    echo "[error] ${1}\n" >> ${LOGFILE}
   fi
   >&2 echo "[error] ${1}"
 }
 
 function logger_info {
-  if [ -n "${LOG_TO_FILE}" ]
+  if [ -n "${LOGFILE}" ]
   then
-    echo "[info] ${1}\n" >> ${LOG_TO_FILE}
+    echo "[info] ${1}\n" >> ${LOGFILE}
   else
     echo "[info] ${1}"
   fi
