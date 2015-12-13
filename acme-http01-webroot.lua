@@ -22,25 +22,30 @@
 -- ./letsencrypt-auto certonly --text --webroot --webroot-path /var/tmp -d blah.example.com --renew-by-default --agree-tos --email my@email.com
 --
 
---
--- Configuration begin
---
-
--- Path passed to letsencrypt via the '--webroot-path' parameter must match this
-WEBROOT = "/var/tmp"
+acme = {}
+acme.version = "0.1.0"
 
 --
--- Configuration end
+-- Configuration
 --
+-- When HAProxy is *not* configured with the 'chroot' option you must set an absolute path here and pass 
+-- that as 'webroot-path' to the letsencrypt client
 
-VERSION = "0.1.0"
+acme.conf = {
+	["non_chroot_webroot"] = ""
+}
 
-core.Info("[acme] http-01 plugin v." .. VERSION .. " loaded");
+--
+-- Startup
+--  
+acme.startup = function()
+	core.Info("[acme] http-01 plugin v" .. acme.version);
+end
 
 --
 -- ACME http-01 validation endpoint
 --
-core.register_service("acme-http01", "http", function(applet)
+acme.http01 = function(applet)
 	local response = ""
 	local reqPath = applet.sf:path()
 	local src = applet.sf:src()
@@ -72,7 +77,7 @@ core.register_service("acme-http01", "http", function(applet)
 	applet:add_header("Content-Type", "text/plain")
 	applet:start_response()
 	applet:send(response)
-end)
+end
 
 --
 -- strip chars that are not in the URL-safe Base64 alphabet
@@ -88,11 +93,15 @@ end
 -- get key auth from token file
 --
 function getKeyAuth(token)
-	local keyAuth = ""
-	local f = io.open(WEBROOT .. "/.well-known/acme-challenge/" .. token, "rb")
-	if f ~= nil then
-		keyAuth = f:read("*all")
-		f:close()
-	end
-	return keyAuth
+        local keyAuth = ""
+        local path = acme.conf.non_chroot_webroot .. "/.well-known/acme-challenge/" .. token
+        local f = io.open(path, "rb")
+        if f ~= nil then
+                keyAuth = f:read("*all")
+                f:close()
+        end
+        return keyAuth
 end
+
+core.register_init(acme.startup)
+core.register_service("acme-http01", "http", acme.http01)

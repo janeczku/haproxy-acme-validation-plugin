@@ -14,9 +14,9 @@ The plugin is compatible with ACME clients supporting webroot authentication for
 ### Zero-Downtime
 
 No need to take HAProxy offline to issue or reissue certificates.
-### Self-Contained & Lean
+### Self-Contained
 
-No need to leverage a backend webserver for the trivial task of serving a key authorization from a file.
+No need to leverage a backend webserver for the trivial task of serving a key authorization file once every three months per domain.
 
 ## Installation instructions
 
@@ -31,13 +31,13 @@ If there is a line similar to this you are good to go:
 
 	Built with Lua support
 
-If your binary doesn't come with Lua bindings, you can download Debian and Ubuntu packages of the latest v1.6 release from the [Debian HAProxy packaging team](http://haproxy.debian.net/).
+If your binary doesn't come with Lua bindings, you can download Debian/Ubuntu packages of the latest v1.6 release from the [Debian HAProxy packaging team](http://haproxy.debian.net/).
 
 ### HAProxy configuration
 
-Copy `acme-http01-webroot.lua` to a location accessible by HAProxy.
+Copy `acme-http01-webroot.lua` to a location accessible by HAProxy. In case that you don't run HAProxy chrooted (`chroot` config option), you need to edit the plugin and set the `non_chroot_webroot` parameter to the path of the directory you want to use as 'webroot'.
 
-Only minimal changes to your existing `haproxy.cfg` are necessary. In fact you just need to add **three lines**:
+To activate the plugin you just need to add **three lines** to your `haproxy.cfg`:
 
 In the `global` section insert
 
@@ -45,12 +45,12 @@ In the `global` section insert
 
 to invoke the Lua plugin.
 
-In the `frontend` section serving the domain(s) for which you want to create/renew certificates insert
+In the `frontend` section serving the domain(s) for which you want to create/renew certificates insert:
 
 	acl url_acme_http01 path_beg /.well-known/acme-challenge/
     http-request use-service lua.acme-http01 if METH_GET url_acme_http01
 
-to pass ACME http-01 validation requests to the Lua plugin.
+This will pass ACME http-01 validation requests to the Lua plugin handler.
 
 *Note:* ACME protocol stipulates validation on port 80. If your HTTP frontend listens on a non-standard port, make sure to add a port 80 bind directive.
 
@@ -83,10 +83,11 @@ Follow the [official guide](https://letsencrypt.readthedocs.org/en/latest/using.
 
 We are ready to create our certificate. Let's roll! 
 
-What happens here is, we invoke the `letsencrypt` client with the [webroot method](https://letsencrypt.readthedocs.org/en/latest/using.html#webroot) and pass our email address and the `WEBROOT` path configured in the Lua plugin. The domain validation is then be performed against the running HAProxy instance.
+We invoke the `letsencrypt` client with the [webroot method](https://letsencrypt.readthedocs.org/en/latest/using.html#webroot).
+`--webroot-path` must be set to the value of the `chroot` parameter in your `haproxy.cfg`. If you are not running HAProxy chrooted you need to set it to the value of the `non_chroot_webroot` parameter configured in the Lua plugin.
 
 	$ sudo ./letsencrypt-auto certonly --text --webroot --webroot-path \
-	  /var/temp -d www.example.com --renew-by-default --agree-tos \
+	  /var/lib/haproxy -d www.example.com --renew-by-default --agree-tos \
 	  --email your@email.com
 
 Next, concat the certificate chain and private key to a `PEM` file suitable for HAProxy:

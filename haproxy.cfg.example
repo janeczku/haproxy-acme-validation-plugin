@@ -1,10 +1,15 @@
 global
-    #daemon
-    #log /dev/log    local0
+    user haproxy
+    group haproxy
+    daemon
+    log /dev/log    local0
+    log /dev/log    local1 info
+    chroot /var/lib/haproxy
     crt-base /etc/letsencrypt/live
     lua-load /etc/haproxy/acme-http01-webroot.lua
     
 defaults
+    log     global
     mode    http
     option  httplog
     timeout connect 5000

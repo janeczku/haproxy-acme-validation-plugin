@@ -18,7 +18,7 @@ LE_CLIENT="/path/to/letsencrypt-auto"
 
 HAPROXY_RELOAD_CMD="service haproxy reload"
 
-WEBROOT="/var/tmp"
+WEBROOT="/var/lib/haproxy"
 
 # Enable to redirect output to logfile (for silent cron jobs)
 # LOGFILE="/var/log/certrenewal.log"
