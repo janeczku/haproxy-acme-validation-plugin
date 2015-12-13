@@ -31,7 +31,7 @@ If there is a line similar to this you are good to go:
 
 	Built with Lua support
 
-If Lua support is not enabled you may follow [these instructions](http://www.arpalert.org/haproxy-lua.html#h103) for compiling a HAProxy binary with Lua support (hint: it's quick and painless).
+If your binary doesn't come with Lua bindings, you can download Debian and Ubuntu packages of the latest v1.6 release from the [Debian HAProxy packaging team](http://haproxy.debian.net/).
 
 ### HAProxy configuration
 
