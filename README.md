@@ -22,7 +22,7 @@ No need to leverage a backend webserver for the trivial task of serving a key au
 
 ### Prerequesites
 
-You need to be rolling HAProxy version 1.6 or later with Lua support enabled.
+You need to be rolling HAProxy version `1.6.3` or later with Lua support enabled.
 To check if your HAProxy binary was compiled with Lua support run the following command:
 
 	haproxy -vv

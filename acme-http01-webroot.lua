@@ -23,7 +23,7 @@
 --
 
 acme = {}
-acme.version = "0.1.0"
+acme.version = "0.1.1"
 
 --
 -- Configuration
@@ -47,7 +47,7 @@ end
 --
 acme.http01 = function(applet)
 	local response = ""
-	local reqPath = applet.sf:path()
+	local reqPath = applet.path
 	local src = applet.sf:src()
 	local token = reqPath:match( ".+/(.*)$" )
 
