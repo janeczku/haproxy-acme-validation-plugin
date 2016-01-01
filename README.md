@@ -22,20 +22,21 @@ No need to leverage a backend webserver for the trivial task of serving a key au
 
 ### Prerequesites
 
-You need to be rolling HAProxy version `1.6.3` or later with Lua support enabled.
+You need to be rolling HAProxy version `1.6.0` or later with Lua support enabled.
 To check if your HAProxy binary was compiled with Lua support run the following command:
 
 	haproxy -vv
 
 If there is a line similar to this you are good to go:
 
-	Built with Lua support
+	Built with Lua version
 
 If your binary doesn't come with Lua bindings, you can download Debian/Ubuntu packages of the latest v1.6 release from the [Debian HAProxy packaging team](http://haproxy.debian.net/).
 
-### HAProxy configuration
+### Installation
 
-Copy `acme-http01-webroot.lua` to a location accessible by HAProxy. In case that you don't run HAProxy chrooted (`chroot` config option), you need to edit the plugin and set the `non_chroot_webroot` parameter to the path of the directory you want to use as 'webroot'.
+Download the zip/tar.gz archive corresponding to your version of HAProxy from the [releases page](https://github.com/janeczku/haproxy-acme-validation-plugin/releases) and extract the files.
+Copy `acme-http01-webroot.lua` to a location accessible by HAProxy. If you don't run HAProxy chrooted (`chroot` config option), you need to edit the plugin and set the `non_chroot_webroot` value to the path of the directory you want to use as your web root.
 
 To activate the plugin you just need to add **three lines** to your `haproxy.cfg`:
 
