@@ -1,5 +1,10 @@
 ## `HAProxy` ACME domain validation plugin
 
+[![Latest Version](https://img.shields.io/github/release/janeczku/haproxy-acme-validation-plugin.svg?maxAge=2592000)][release]
+[![License](https://img.shields.io/github/license/janeczku/haproxy-acme-validation-plugin.svg?maxAge=2592000)]()
+
+[release]: https://github.com/janeczku/haproxy-acme-validation-plugin/releases
+
 HAProxy plugin implementing zero-downtime [ACME http-01](https://github.com/letsencrypt/acme-spec) validation for domains served by HAProxy instances. The plugin leverages HAProxy's Lua API to allow HAProxy to answer validation challenges using token/key-auth files provisioned by an ACME client to a designated directory.
 
 ## Compatible ACME clients
