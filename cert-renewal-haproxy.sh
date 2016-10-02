@@ -90,7 +90,7 @@ done < <(find /etc/letsencrypt/live -name cert.pem -print0)
 
 # create haproxy.pem file(s)
 for domain in ${renewed_certs[@]}; do
-  cat ${le_cert_root}/${domain}/privkey.pem ${le_cert_root}/${domain}/fullchain.pem | sudo tee ${le_cert_root}/${domain}/haproxy.pem >/dev/null
+  cat ${le_cert_root}/${domain}/privkey.pem ${le_cert_root}/${domain}/fullchain.pem | tee ${le_cert_root}/${domain}/haproxy.pem >/dev/null
   if [ $? -ne 0 ]; then
     logger_error "failed to create haproxy.pem file!"
     exit 1
