@@ -84,8 +84,8 @@ end
 -- see https://github.com/letsencrypt/acme-spec/blob/master/draft-barnes-acme.md
 --
 function sanitizeToken(token)
-	_strip="[^%a%d%+%-%_=]"
-	token = token:gsub(_strip,'')
+	local pattern="^[%a%d%-_]+$"
+	token = token:match(pattern)
 	return token
 end
 
