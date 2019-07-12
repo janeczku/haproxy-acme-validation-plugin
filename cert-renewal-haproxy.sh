@@ -66,7 +66,7 @@ renewed_certs=()
 exitcode=0
 while IFS= read -r -d '' cert; do
   if ! openssl x509 -noout -checkend $((4*7*86400)) -in "${cert}"; then
-    subject="$(openssl x509 -noout -subject -in "${cert}" | rev | cut -d'=' -f1 | rev | awk '{$1=$1};1')"
+    subject="$(openssl x509 -noout -subject -in "${cert}" | sed -r 's/.*CN ?= ?(.*)/\1/')"
     subjectaltnames="$(openssl x509 -noout -text -in "${cert}" | sed -n '/X509v3 Subject Alternative Name/{n;p}' | sed 's/\s//g' | tr -d 'DNS:' | sed 's/,/ /g')"
     domains="-d ${subject}"
     for name in ${subjectaltnames}; do
